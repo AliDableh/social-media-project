@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <script src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
+        <script src=".\node_modules\\axios\\dist\\axios.min.js"></script>
+        
+    </head>
+    <style>
+      .popup {
+            display: none; 
+            position: fixed; 
+            z-index: 999;
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%;
+            background-color: rgba(0,0,0,0.5); 
+        }
+
+        /* Pop-up box */
+        .popup-content {
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 300px;
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        
+        .popup button {
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 10px;
+        }
+
+        .confirm-btn {
+            background-color: #fa0328; 
+            color: white;
+            border: none;
+            border-radius: 10px;
+        }
+
+        .cancel-btn {
+            background-color: #4CAF50; 
+            color: white;
+            border: none;
+            border-radius: 10px;
+        }
+        #Add-btn {
+            position: fixed;
+            bottom: 10%;
+            right: 10%;
+            height: 70px;
+            width: 70px;
+            font-size: 50px;
+            background-color: #1e2a3d;
+            color: white;
+            border-radius: 50%;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+    }
+
+#Add-btn:hover {
+    background-color: #fc604f;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
+
+#Add-btn:before {
+    content: "+"; 
+    font-size: 40px; 
+    font-weight: bold;
+}
+
+body{
+    background-color: #ecefff;
+  }
+.card{
+    border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  margin-top: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card-header {
+  background-color: #0f1c2e; 
+  color: white;
+  padding: 15px; 
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+}
+
+
+#liveAlertPlaceholder {
+    position: absolute;
+    top: 20px;
+    width: 100%;
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+}
+@media (max-width: 768px) {
+    #Add-btn {
+        right: 5%;
+        bottom: 5%;
+    }
+  }
+  .navbar {
+background-color: #1e2a3d !important;
+padding: 10px 20px;
+border-radius: 15px;
+}
+
+.navbar-brand {
+font-size: 1.5rem;
+font-weight: bold;
+}
+
+.navbar-nav .nav-link {
+font-size: 1.1rem;
+padding: 10px 20px;
+transition: all 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+background-color: #af4c4c;
+border-radius: 5px;
+}
+
+.navbar-toggler-icon {
+background-color: white;
+}
+
+#login-div, #logout-div {
+display: flex;
+align-items: center;
+}
+.btn-outline-light, .btn-outline-success {
+color: white;
+border-color: white;
+font-size: 1rem;
+transition: all 0.3s ease;
+}
+
+.btn-outline-light:hover, .btn-outline-success:hover {
+background-color: #ffffff;
+border-color: #4CAF50;
+color: rgb(0, 0, 0);
+}
+
+#user_name_profile {
+color: white;
+}
+
+#logout {
+margin-left: 10px;
+}
+
+
+.lds-ring,
+.lds-ring div {
+  box-sizing: border-box;
+}
+.lds-ring {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border: 8px solid currentColor;
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: currentColor transparent transparent transparent;
+}
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+
+    </style>
+    <body>
+      <div id="Loder" style = "background-color: #d2d2d248;  border-radius: 20px; position: fixed; left: 0px; right: 0px; bottom: 0px; top: 0px; margin: auto auto; display:flex ;justify-content: center; align-items: center; z-index: 9999; width: 100px; height: 100px;">
+        <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+      </div>
+  <div class="popup" id="deletePopup">
+      <div class="popup-content">
+          <h3>Are you sure you want to delete this post?</h3>
+          <button class="confirm-btn" onclick="deletePost()">Yes, Delete</button>
+          <button class="cancel-btn" onclick="closePopup()">Cancel</button>
+      </div>
+  </div>
+ <!-- Add Post Button started -->
+<!-- Button to trigger modal -->
+<div id="Add-btn" onclick="CreatePost()">
+
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="postModal" tabindex="-1" aria-labelledby="postModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        
+        <div class="show fade" id="liveAlertPlaceholder"></div> <!-- Placeholder for alerts -->
+        <h5 class="modal-title" id="postModalLabel">Add Post</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="postForm">
+          <!-- Title input -->
+          <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control" id="title" placeholder="Enter the title">
+            <input type="hidden" id="post_id" value="">
+          </div>
+
+          <!-- Body input -->
+          <div class="mb-3">
+            <label for="body" class="form-label">Body</label>
+            <textarea class="form-control" id="body" rows="3" placeholder="Enter the body content"></textarea>
+          </div>
+
+          <!-- Image input -->
+          <div class="mb-3">
+            <label for="image" class="form-label">Image</label>
+            <input class="form-control" type="file" id="image">
+            
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button  type="button" class="btn btn-secondary" onclick="hide()" data-bs-dismiss="modal">Close</button>
+        <button id="post_modele_submit_btn"  onclick="Add_Post()" type="submit" class="btn btn-primary" form="postForm">Add</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <!-- Add Post Button end -->
+
+       <!-- navbar start -->
+<div class="container">
+    <div class="d-flex justify-content-center">
+        <div class="col-9">
+            <nav class="navbar navbar-expand-lg bg-primary shadow rounded-bottom pt-2">
+                <div class="container-fluid">
+                    <a class="navbar-brand text-white" href="#">AD</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                        <div class="navbar-nav">
+                            <a style="cursor: pointer;" class="nav-link active text-white" aria-current="page" href="Homepage.html">Home</a>
+                            <a onclick="myid()" style="cursor: pointer;" class="nav-link text-white">Profile</a>
+                        </div>
+
+                        <div id="login-div" class="d-flex w-100 justify-content-end mx-auto">
+                            <button id="lo" type="button" class="btn btn-outline-light mx-3">Login</button>
+                            <button id="re" type="button" class="btn btn-outline-light">Register</button>
+                        </div>
+
+                        <div id="logout-div" class="d-flex w-100 justify-content-end mx-auto" style="display:none;">
+                            <img id="user_image_profile" src="assets/1.jpg" class="rounded-circle" style="width: 40px; height: 40px; margin-right: 10px;">
+                            <b id="user_name_profile" class="text-white" style="padding-top: 5px; margin-right: 5px;">Ali Dableh</b>
+                            <button onclick="logout()" id="logout" type="button" class="btn btn-outline-danger">Logout</button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- navbar end -->
+         
+         <!-- the post body is here-->
+        <div class="container" style="height: 1000px;margin-top: 50px;">
+            <div class="d-flex justify-content-center">
+                <div class="col-9">
+                  <div id="posts">
+                    <div class="card">
+                        <div class="card-header">
+                          <!-- the image part-->
+                         <img src="./assets/1.jpg" style="width: 40px;height: 40px;" class="rounded-circle border border-3">
+
+                         <!-- the user name part-->
+                          <b id="UserName" class="mx-2"> Ali Dableh</b>
+                        </div>
+                        <div class="card-body">
+                          <img src="./assets/f.png" alt="" class="w-100">
+                          <p style="color: gray;">1h ago</p>
+                          <h5 class="card-title">God of War Ragnarök</h5>
+                          <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus praesentium saepe placeat, eos id, voluptate aperiam neque nam dolorum corrupti recusandae accusantium dolores, exercitationem quasi alias omnis vel libero reiciendis!</p>
+                          <hr>
+                          <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
+                              <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"/>
+                            </svg>
+                            <span>
+                              (3) Comments
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card">
+                        <div class="card-header">
+                          <!-- the image part-->
+                         <img src="./assets/1.jpg" style="width: 40px;height: 40px;" class="rounded-circle border border-3">
+
+                         <!-- the user name part-->
+                          <b id="UserName" class="mx-2"> Ali Dableh</b>
+                        </div>
+                        <div class="card-body">
+                          <img src="./assets/f.png" alt="" class="w-100">
+                          <p style="color: gray;">1h ago</p>
+                          <h5 class="card-title">God of War Ragnarök</h5>
+                          <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus praesentium saepe placeat, eos id, voluptate aperiam neque nam dolorum corrupti recusandae accusantium dolores, exercitationem quasi alias omnis vel libero reiciendis!</p>
+                          <hr>
+                          <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
+                              <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"/>
+                            </svg>
+                            <span>
+                              (3) Comments
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            </div>    
+        </div>
+          <!-- end post body-->
+    </body>
+    <script src="./js/mainLogic.js"></script>
+    <script>
+
+    initUI();
+
+    function Add_Post() {
+    let token = localStorage.getItem("token")
+    let postId = document.getElementById("post_id").value;
+    let isCreate = postId == null || postId == ""
+    let body = document.getElementById("body").value;
+    let title = document.getElementById("title").value;
+    let image = document.getElementById("image").files[0];
+//لازم اذا فيه صورة
+    let formData = new FormData();
+    formData.append("title", title);
+    formData.append("body", body);
+    if (image) {
+        formData.append("image", image);
+    }
+    if (isCreate) {
+   
+    axios.post("https://tarmeezacademy.com/api/v1/posts", formData,{
+    headers: {
+            'Authorization': `Bearer ${token}`,
+        }
+    })
+        .then(function (response) {
+            console.log(response); // Handle success
+            Show_Success_Alert("The Post was added successfully", "success");
+                GetPosts()
+        })
+        .catch(function (error) {
+            let e = error.response.data.message
+            Show_Success_Alert(e,'danger')
+        });
+    }
+    else{
+    formData.append("_method","put")
+    axios.post(`https://tarmeezacademy.com/api/v1/posts/${postId}`, formData,{
+    headers: {
+            'Authorization': `Bearer ${token}`,
+        }
+    })
+      .then(function (response) {
+          console.log(response); // Handle success
+          Show_Success_Alert("The Post was updated successfully", "success");
+          GetPosts()
+      })
+      .catch(function (error) {
+          let e = error.response.data.message
+          Show_Success_Alert(e,'danger')
+      });
+    }
+    event.preventDefault()
+}
+
+let lastPage = 1;
+let currentPage = 1;
+let isLoading = false;
+
+function GetPosts(reload = true, page = 1) {
+  toggleLoader(true);
+  isLoading = true;
+
+  axios.get(`https://tarmeezacademy.com/api/v1/posts?limit=15&page=${page}`)
+    .then(function (response) {
+      const posts = response.data.data;
+      lastPage = response.data.meta.last_page;
+
+      if (reload) {
+        document.getElementById("posts").innerHTML = "";
+      }
+
+      for (const post of posts) {
+        let author = post.author;
+        let user = GetCerentUser(); 
+        let isMyPost = user != null && post.author.id == user.id;
+        let editBtnContent = ``;
+
+        if (isMyPost) {
+          editBtnContent = `
+            <button class="btn btn-danger" style='margin-left:5px; float:right' onclick="showPopup('${encodeURIComponent(JSON.stringify(post))}')">delete</button>
+            <button class="btn btn-secondary" style='float:right' onclick="editPostClicked('${encodeURIComponent(JSON.stringify(post))}')">edit</button>
+          `;
+        }
+
+        let content = `
+          <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <div class="d-flex align-items-center" onclick="profile(${author.id})" style="cursor:pointer;">
+                <img src="${author.profile_image}" style="width: 40px; height: 40px;" class="rounded-circle border border-3">
+                <b class="mx-2 mb-0">${author.username}</b>
+              </div>
+              <span>${editBtnContent}</span>
+            </div>
+
+            <div class="card-body" onclick="postCliked(${post.id})" style="cursor:pointer">
+              <img src="${post.image}" alt="" class="w-100">
+              <p style="color: gray;">${post.created_at}</p>
+              <h5 class="card-title">${post.title}</h5>
+              <p class="card-text">${post.body}</p>
+              <hr>
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-chat-left" viewBox="0 0 16 16">
+                  <path d="M8 0C3.58 0 0 3.58 0 8s3.58 8 8 8c1.638 0 3.146-.49 4.362-1.325l3.822 2.575a.5.5 0 0 0 .816-.467l-.733-4.147a6.931 6.931 0 0 0 1.37-3.208C15.924 4.98 12.528 0 8 0zm0 1c3.378 0 6.122 2.743 6.122 6.122 0 1.452-.482 2.793-1.287 3.877a.5.5 0 0 0 .042.628l1.378 3.548-2.692-1.795c-.693.331-1.453.553-2.21.702-.8.181-1.614.276-2.432.276-3.016 0-5.472-2.456-5.472-5.472 0-1.148.313-2.221.85-3.125L8 1z"/>
+                </svg>
+                <span>
+                  (${post.comments_count}) Comments
+                  <span id="posts-tag-${post.id}"></span>
+                </span>
+              </div>
+            </div>
+          </div>
+        `;
+
+        document.getElementById("posts").innerHTML += content;
+
+        const tagContainerId = `posts-tag-${post.id}`;
+        document.getElementById(tagContainerId).innerHTML = "";
+
+        for (const tag of post.tags) {
+          let tag_content = `
+            <button class="btn btn-sm rounded-5" style="background-color:blue; color:white">
+              ${tag.name}
+            </button>`;
+          document.getElementById(tagContainerId).innerHTML += tag_content;
+        }
+      }
+    })
+    .catch(function (error) {
+      console.error(error);
+    })
+    .finally(() => {
+      toggleLoader(false);
+      isLoading = false;
+    });
+}
+
+function infiniteScrolling() {
+  window.addEventListener('scroll', function () {
+    const reachedBottom = window.innerHeight + window.pageYOffset >= document.body.scrollHeight - 50;
+
+    if (reachedBottom && currentPage < lastPage && !isLoading) {
+      currentPage++;
+      GetPosts(false, currentPage);
+    }
+  });
+}
+
+function postCliked(postId){
+  window.location.href = `postDetails.html?PostId=${postId}`;
+}
+function profile(author_id){
+  window.location.href = `userProfile.html?Id=${author_id}`;
+}
+     //model show up
+function editPostClicked(postobj) {
+ let post = JSON.parse(decodeURIComponent(postobj))
+  console.log(post)
+    document.getElementById('post_id').value = post.id
+    document.getElementById('title').value = post.title
+    document.getElementById('body').value = post.body
+  document.getElementById('postModalLabel').innerHTML = "Edit Post"
+  document.getElementById('post_modele_submit_btn').innerHTML = "Update"
+  let postModal = new bootstrap.Modal(document.getElementById('postModal'),{})
+  postModal.toggle()
+}
+function deletePostClicked(object) {
+}
+//model show up
+function CreatePost() {
+    document.getElementById('post_id').value =""
+    document.getElementById('title').value = ""
+    document.getElementById('body').value =""
+  document.getElementById('postModalLabel').innerHTML = "Create Post"
+  document.getElementById('post_modele_submit_btn').innerHTML = "Create"
+  let postModal = new bootstrap.Modal(document.getElementById('postModal'),{})
+  postModal.toggle()
+}
+GetPosts(true)
+infiniteScrolling()
+function showPopup(postobj) {
+  let post = JSON.parse(decodeURIComponent(postobj))
+  console.log(post)
+    document.getElementById('post_id').value = post.id
+  document.getElementById('deletePopup').style.display = 'block';
+}
+
+function closePopup() {
+  document.getElementById('deletePopup').style.display = 'none';
+}
+
+function deletePost() { 
+    let POstID = document.getElementById('post_id').value;
+    let token = localStorage.getItem("token");
+
+    if (!token) {
+        console.error('Token is missing!');
+        Show_Success_Alert("Missing authorization token", "danger");
+        return;
+    }
+
+    axios.delete(`https://tarmeezacademy.com/api/v1/posts/${POstID}`, {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        }
+    })
+    
+    .then(function (response) {
+      document.getElementById('deletePopup').style.display = 'none';
+        console.log(response);
+        setTimeout(() => {
+        Show_Success_Alert("The Post was successfully deleted", "success");
+      }, 1500);
+        GetPosts(); 
+    })
+    .catch(function (error) {
+        console.error(error); // Log the error to debug
+        let e = error.response ? error.response.data.message : "An error occurred";
+        Show_Success_Alert(e, "danger");
+    });
+}
+function hide() {
+  let postModal = new bootstrap.Modal(document.getElementById('postModal'));
+  setTimeout(function() {
+    postModal.hide(); 
+}, 500);
+}
+
+function toggleLoader (show = true) 
+{
+  if (show) 
+  {
+    document.getElementById("Loder").style.visibility = "visible"
+  }else{
+    document.getElementById("Loder").style.visibility = "hidden"
+  }
+}
+</script>
+</html>

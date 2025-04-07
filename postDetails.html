@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>postDetelis</title>
+    <script src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <script src=".\node_modules\\axios\\dist\\axios.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f1f6; 
+            color: #333; 
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            background-color: #1e2a3d; 
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+            margin-bottom: 30px;
+        }
+    
+        .navbar-brand {
+            font-weight: bold;
+            color: #fff; 
+        }
+    
+        .navbar-nav .nav-link {
+            color: #f5f6fa;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+    
+        .navbar-nav .nav-link:hover {
+            color: #1e2a3d; 
+        }
+
+        .card {
+            border-radius: 15px;
+            margin-top: 20px;
+            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff; 
+        }
+    
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #0f1c2e; 
+            color: #fff;
+            padding: 20px;
+            border-radius: 15px 15px 0 0;
+        }
+    
+        .card-body {
+            padding: 25px;
+            background-color: #f9f9fb;
+            border-radius: 0 0 15px 15px;
+        }
+    
+        .card-body h5 {
+            color: #1e2a3d;
+        }
+
+        .new-comment {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #ffffff; 
+            border-radius: 10px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+    
+        .new-comment textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            resize: none;
+            margin-bottom: 10px;
+            background-color: #f9f9fb; 
+            color: #333;
+            transition: all 0.3s ease;
+        }
+    
+        .new-comment textarea:focus {
+            outline: none;
+            border-color: #1e2a3d; 
+        }
+    
+        .new-comment button {
+            width: 100%;
+            padding: 12px;
+            background-color: #1e2a3d; 
+            border: none;
+            color: #fff;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+    
+        .new-comment button:hover {
+            background-color: #0b45a3; 
+        }
+    
+        .container {
+            max-width: 1000px;
+            margin-top: 50px;
+        }
+    
+        @media (max-width: 768px) {
+        
+    
+            .card-body {
+                padding: 20px;
+            }
+    
+            .comment-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+    
+            .user-image {
+                margin-bottom: 10px;
+            }
+        }
+        
+.comment {
+    background-color: #f9f9f9; 
+    border-radius: 8px;
+    padding: 12px; 
+    margin: 10px 0; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+}
+.comment-header {
+    display: flex; 
+    align-items: center; 
+    margin-bottom: 8px; 
+}
+
+.user-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%; 
+    margin-right: 10px; 
+}
+
+.username {
+    font-weight: bold;
+    color: #333; 
+    font-size: 14px; 
+}
+.comment-text {
+    font-size: 16px; 
+    color: #555; 
+    line-height: 1.5; 
+
+}
+#liveAlertPlaceholder {
+    position: fixed;
+    bottom: 0; 
+    right: 0;   
+    z-index: 9999;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 10px;
+    text-align: center;
+    margin: 20px;
+}
+
+.lds-ring,
+.lds-ring div {
+  box-sizing: border-box;
+}
+.lds-ring {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border: 8px solid currentColor;
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: currentColor transparent transparent transparent;
+}
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+    </style>
+    
+</head>
+<body>
+    <div id="Loder" style = "background-color: #d2d2d248;  border-radius: 20px; position: fixed; left: 0px; right: 0px; bottom: 0px; top: 0px; margin: auto auto; display:flex ;justify-content: center; align-items: center; z-index: 9999; width: 100px; height: 100px;">
+        <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+      </div>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+           
+            <div class="d-flex align-items-center">
+                <a class="navbar-brand" href="#">AD</a>
+               
+                <ul class="navbar-nav ms-3">
+                    <li class="nav-item active"><a class="nav-link" href="Homepage.html">Home</a></li>
+                    <li onclick="myid()" style="cursor: pointer;" class="nav-item"><a class="nav-link">Profile</a></li>
+                </ul>
+            </div>
+            
+            
+            <div class="d-flex ms-auto" id="login-div">
+                <button id="lo" type="button" class="btn btn-outline-light mx-3">Login</button>
+                <button id="re" type="button" class="btn btn-outline-light">Register</button>
+            </div>
+            
+         
+            <div class="d-flex ms-3" id="logout-div" style="display: none;">
+                <img id="user_image_profile" src="assets/1.jpg" class="rounded-circle" style="width: 40px; height: 40px; margin-right: 10px;">
+                <b id="user_name_profile" style="color: #ecf0f1;">Ali Dableh</b>
+                <button onclick="logout()" id="logout" type="button" class="btn btn-outline-danger ms-2">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+     <!-- Placeholder for alerts -->
+     <div class="show fade" id="liveAlertPlaceholder"></div>
+   
+    <!-- Post and Comments -->
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1><span id="UserName">Ali</span> Post</h1>
+            </div>
+        </div>
+        <div id="posts">
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+                <img src="./assets/1.jpg" class="rounded-circle user-image" alt="User Image">
+                <b id="UserName" class="mx-2">Ali Dableh</b>
+                <span class="ms-auto text-muted">1h ago</span>
+            </div>
+            <div class="card-body">
+                <img src="./assets/f.png" alt="Post Image" class="w-100 mb-3 rounded">
+                <h5 class="card-title">God of War Ragnarök</h5>
+                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus praesentium saepe placeat, eos id, voluptate aperiam neque nam dolorum corrupti recusandae accusantium dolores, exercitationem quasi alias omnis vel libero reiciendis!</p>
+                <div class="d-flex align-items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-chat-left" viewBox="0 0 16 16">
+                        <path d="M8 0C3.58 0 0 3.58 0 8s3.58 8 8 8c1.638 0 3.146-.49 4.362-1.325l3.822 2.575a.5.5 0 0 0 .816-.467l-.733-4.147a6.931 6.931 0 0 0 1.37-3.208C15.924 4.98 12.528 0 8 0zm0 1c3.378 0 6.122 2.743 6.122 6.122 0 1.452-.482 2.793-1.287 3.877a.5.5 0 0 0 .042.628l1.378 3.548-2.692-1.795c-.693.331-1.453.553-2.21.702-.8.181-1.614.276-2.432.276-3.016 0-5.472-2.456-5.472-5.472 0-1.148.313-2.221.85-3.125L8 1z"/>
+                    </svg>
+                    <span>(3) Comments</span>
+                </div>
+            </div>
+        </div>
+    </div>
+        <!-- Comments Section -->
+        <div id="Comments Section" class="comments-section mt-4">
+            <h2>Comments:</h2>
+            <div class="comment">
+                <div class="comment-header">
+                    <img src="assets/f.png" alt="User Image" class="user-image">
+                    <span class="username">User One</span>
+                </div>
+                <div class="comment-text">This is a comment!</div>
+            </div>
+        </div>
+
+        <!-- Add Comment Section -->
+        <div class="new-comment">
+            <textarea id="userComent" placeholder="Write a comment..."></textarea>
+            <button onclick="addComents()" type="button" class="btn btn-primary">Post Comment</button>
+        </div>
+    </div>
+
+
+</body>
+<script src="./js/mainLogic.js"></script>
+<script>
+  initUI()
+  // Get the id from the link
+  const uRLprams = new URLSearchParams(window.location.search)
+  const id = uRLprams.get("PostId")
+  console.log(id)
+  //end
+
+  //Get Post by id
+  function GetPost() {
+    axios.get(`https://tarmeezacademy.com/api/v1/posts/${id}`)
+    .then((response) =>{
+        toggleLoader(false)
+        const post = response.data.data
+        const coments = post.comeents
+        const athor = post.author
+        document.getElementById('UserName').innerHTML=athor.username
+        const postCotent =`
+         <div class="card">
+            <div class="card-header d-flex align-items-center">
+                <img src="${athor.profile_image}" class="rounded-circle user-image" alt="User Image">
+                <b id="UserName" class="mx-2">${athor.username}</b>
+                <span class="ms-auto text-muted">${post.created_at}</span>
+            </div>
+            <div class="card-body">
+                <img src="${post.image}" alt="Post Image" class="w-100 mb-3 rounded">
+                <h5 class="card-title">${post.title}</h5>
+                <p class="card-text">${post.body}</p>
+                <div class="d-flex align-items-center">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-chat-left" viewBox="0 0 16 16">
+                        <path d="M8 0C3.58 0 0 3.58 0 8s3.58 8 8 8c1.638 0 3.146-.49 4.362-1.325l3.822 2.575a.5.5 0 0 0 .816-.467l-.733-4.147a6.931 6.931 0 0 0 1.37-3.208C15.924 4.98 12.528 0 8 0zm0 1c3.378 0 6.122 2.743 6.122 6.122 0 1.452-.482 2.793-1.287 3.877a.5.5 0 0 0 .042.628l1.378 3.548-2.692-1.795c-.693.331-1.453.553-2.21.702-.8.181-1.614.276-2.432.276-3.016 0-5.472-2.456-5.472-5.472 0-1.148.313-2.221.85-3.125L8 1z"/>
+                    </svg>
+                    <span>(${post.comments_count}) Comments</span>
+                </div>
+            </div>
+        `
+       document.getElementById("posts").innerHTML = postCotent
+       const Comeents = post.comments
+       document.getElementById('Comments Section').innerHTML = ""
+       for ( coment of Comeents) {
+        console.log(coment)
+        let content_coments = `
+        <div class="comment">
+                <div class="comment-header">
+                    <img src="${coment.author.profile_image}" alt="User Image" class="user-image">
+                    <span class="username">${coment.author.username}</span>
+                </div>
+                <div class="comment-text">${coment.body}</div>
+            </div>
+        `
+        document.getElementById('Comments Section').innerHTML+=content_coments
+       }
+    })
+  }
+  function addComents(){
+    toggleLoader(true)
+    // Get the id from the link
+    const uRLprams = new URLSearchParams(window.location.search)
+    const id = uRLprams.get("PostId")
+    //Get the token from user
+    const token = localStorage.getItem('token')
+    //Get the coment from user 
+    const bodyComents = document.getElementById('userComent').value
+
+    axios.post(`https://tarmeezacademy.com/api/v1/posts/${id}/comments`,
+    {
+     'body' :  bodyComents
+    },
+    {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        }
+    })
+    .then(function (response) {
+            console.log(response); // Handle success
+            Show_Success_Alert("The Comment Add successfully","success")
+             GetPost()
+             toggleLoader(false)
+        })
+    .catch(function (error) {
+        let error1 = error.response.data.message
+            Show_Success_Alert(error1,"danger")
+        });
+  }
+  GetPost()
+  function toggleLoader (show = true) 
+{
+  if (show) 
+  {
+    document.getElementById("Loder").style.visibility = "visible"
+  }else{
+    document.getElementById("Loder").style.visibility = "hidden"
+  }
+}
+</script>
+</html>

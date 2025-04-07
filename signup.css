@@ -1,0 +1,170 @@
+:root {
+    --primary-bg: #1e2a3d;
+    --card-bg: #ffffff;
+    --form-bg: #f9f9fb;
+    --text-color: #1e2a3d;
+    --primary-color: #1e2a3d;
+    --hover-color: #0b45a3;
+    --circle-opacity: 0.15;
+}
+
+body {
+    background: var(--primary-bg);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    flex-direction: column;
+    font-family: 'Poppins', sans-serif;
+}
+
+.signup-box {
+    background-color: var(--card-bg);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+    position: relative;
+    z-index: 1;
+}
+
+.signup-box h2 {
+    color: var(--text-color);
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.form-control {
+    border-radius: 25px;
+    padding: 14px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    background-color: var(--form-bg);
+    color: var(--text-color);
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: none;
+}
+
+.btn-signup {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 12px;
+    border-radius: 25px;
+    width: 100%;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-signup:hover {
+    background-color: var(--hover-color);
+}
+
+.footer-text {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.footer-text a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.footer-text a:hover {
+    text-decoration: underline;
+}
+
+.shape {
+    position: absolute;
+    border-radius: 50%;
+    background-color: #ffffff;
+    opacity: var(--circle-opacity);
+    z-index: 0;
+}
+
+.shape-one {
+    width: 200px;
+    height: 200px;
+    top: -50px;
+    left: -50px;
+    animation: moveShapeOne 12s infinite alternate;
+}
+
+.shape-two {
+    width: 150px;
+    height: 150px;
+    bottom: -70px;
+    right: -60px;
+    animation: moveShapeTwo 10s infinite alternate;
+}
+
+@keyframes moveShapeOne {
+    0% {
+        transform: scale(1) translateX(0) translateY(0);
+    }
+    100% {
+        transform: scale(1.4) translateX(80px) translateY(60px);
+    }
+}
+
+@keyframes moveShapeTwo {
+    0% {
+        transform: scale(1) translateX(0) translateY(0);
+    }
+    100% {
+        transform: scale(1.3) translateX(-70px) translateY(-40px);
+    }
+}
+
+#liveAlertPlaceholder {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: auto;
+    max-width: 300px;
+    z-index: 9999;
+}
+.lds-ring,
+.lds-ring div {
+  box-sizing: border-box;
+}
+.lds-ring {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border: 8px solid currentColor;
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: currentColor transparent transparent transparent;
+}
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

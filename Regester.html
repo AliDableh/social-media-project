@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <script src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <script src=".\node_modules\\axios\\dist\\axios.min.js"></script>
+    <link rel="stylesheet" href="signup.css">
+</head>
+<body>
+    <div id="Loder" style = "background-color: #d2d2d248;  border-radius: 20px; position: fixed; left: 0px; right: 0px; bottom: 0px; top: 0px; margin: auto auto; display:flex ;justify-content: center; align-items: center; z-index: 9999; width: 100px; height: 100px;">
+        <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+      </div>
+<div class="shape shape-one"></div>
+<div class="shape shape-two"></div>
+
+<div class="signup-box">
+    <h2>Sign Up</h2>
+    <form>
+       
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="username" placeholder="Enter your username" required>
+            </div>
+            <div class="col-md-6">
+                <label for="fullname" class="form-label">Full Name</label>
+                <input type="text" class="form-control" id="fullname" placeholder="Enter your full name" required>
+            </div>
+        </div>
+
+      
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+            </div>
+            <div class="col-md-6">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" placeholder="Create your password" required>
+            </div>
+        </div>
+
+        
+        <div class="row mb-3">
+            <div class="col-md-12 text-center">
+                <label for="image" class="form-label">Profile Image</label>
+                <input type="file" class="form-control" id="image" required>
+            </div>
+        </div>
+
+        <button id="btn-regester" type="submit" class="btn-signup">Sign Up</button>
+    </form>
+    <div class="footer-text">
+        <p>Already have an account? <a href="./Login.html">Login</a></p>
+    </div>
+</div>
+
+<script>
+    toggleLoader(false)
+function toggleLoader (show = true) 
+{
+  if (show) 
+  {
+    document.getElementById("Loder").style.visibility = "visible"
+  }else{
+    document.getElementById("Loder").style.visibility = "hidden"
+  }
+}
+  function Register_Js() {
+    toggleLoader(true)
+    let username = document.getElementById("username").value;
+    let name = document.getElementById("fullname").value;
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
+    let image = document.getElementById("image").files[0];
+    if (!image) {
+        console.log("No image selected");
+        return; 
+    }
+
+    const formData = new FormData();
+    formData.append("username", username);
+    formData.append("password", password);
+    formData.append("image", image);
+    formData.append("name", name);
+    formData.append("email", email);
+
+    axios.post('https://tarmeezacademy.com/api/v1/register', formData)
+        .then(function (response) {
+            console.log(response)
+            Show_Success_Alert("Account created successfully!");
+        })
+        .catch(function (error) {
+            Show_Failure_Alert("The UserName Or The Email Is Token");
+        })
+        .finally(() => {
+      toggleLoader(false);
+      isLoading = false;
+    });
+  }
+
+  function Show_Success_Alert(message) {
+    const alertPlaceholder = document.createElement('div');
+    alertPlaceholder.classList.add('alert', 'alert-success', 'alert-dismissible', 'fade', 'show', 'alert-position');
+    alertPlaceholder.innerHTML = [
+        `   <div>${message}</div>`,
+        '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+    ].join('');
+    document.body.appendChild(alertPlaceholder);
+
+    setTimeout(() => {
+        alertPlaceholder.remove();
+        window.location.href = './Login.html'; // Redirect to login page after successful registration
+    }, 2000);
+  }
+
+  function Show_Failure_Alert(message) {
+    const alertPlaceholder = document.createElement('div');
+    alertPlaceholder.classList.add('alert', 'alert-danger', 'alert-dismissible', 'fade', 'show', 'alert-position');
+    alertPlaceholder.innerHTML = [
+        `   <div>${message}</div>`,
+        '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+    ].join('');
+    document.body.appendChild(alertPlaceholder);
+
+    setTimeout(() => {
+        alertPlaceholder.remove();
+    }, 3000);
+  }
+
+  document.getElementById("btn-regester").addEventListener("click", (event) => {
+    event.preventDefault(); 
+    Register_Js(); 
+  });
+</script>
+
+</body>
+</html>
